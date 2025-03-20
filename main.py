@@ -42,12 +42,7 @@ def main(argsv):
     
     # Moosilauke
     bbox = GeoBoundingBox(
-        GeoCoord(
-            args.lat_0, args.lon_0
-        ),
-        GeoCoord(
-            args.lat_1, args.lon_1
-        ),
+        args.lat_0, args.lon_0, args.lat_1, args.lon_1
     )
     
     table_dim = Table_Dimention(*args.table_dim)

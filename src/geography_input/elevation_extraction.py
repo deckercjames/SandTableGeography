@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import tempfile
 from typing import List, Union
-from src.spacial.geo_coord_sys import GeoCoord, GeoBoundingBox
+from src.spacial.geo_coord_sys import GeoBoundingBox
 from src.logger import get_logger
 import logging
 

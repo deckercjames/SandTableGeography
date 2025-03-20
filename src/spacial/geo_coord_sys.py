@@ -8,34 +8,21 @@ import logging
 
 logger = get_logger("geo coord", logging.DEBUG)
 
-@dataclass(frozen=True)
-class GeoCoord:
-    lattitude: float
-    longitude: float
-    def __str__(self):
-        lat_dir = 'N' if self.lattitude >= 0 else 'S'
-        lon_dir = 'E' if self.longitude >= 0 else 'W'
-        
-        # Take the absolute value of lat and lon for display
-        lat = abs(self.lattitude)
-        lon = abs(self.longitude)
-        
-        # Format the output with 6 decimal places and cardinal directions
-        return f"Latitude: {lat:.6f}° {lat_dir}, Longitude: {lon:.6f}° {lon_dir}"
-
 
 @dataclass(frozen=True)
 class GeoBoundingBox:
-    corner_0: GeoCoord
-    corner_1: GeoCoord
+    lat_0: float
+    lon_0: float
+    lat_1: float
+    lon_1: float
     def get_min_lat(self):
-        return min(self.corner_0.lattitude, self.corner_1.lattitude)
+        return min(self.lat_0, self.lat_1)
     def get_min_lon(self):
-        return min(self.corner_0.longitude, self.corner_1.longitude)
+        return min(self.lon_0, self.lon_1)
     def get_max_lat(self):
-        return max(self.corner_0.lattitude, self.corner_1.lattitude)
+        return max(self.lat_0, self.lat_1)
     def get_max_lon(self):
-        return max(self.corner_0.longitude, self.corner_1.longitude)
+        return max(self.lon_0, self.lon_1)
     def get_lon_width(self):
         return self.get_max_lon() - self.get_min_lon()
     def get_lat_height(self):
@@ -133,10 +120,5 @@ def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, table_dim: Table_Dimention)
     logger.info("Cropped aproxomatly {:0.2f}% to match the table aspect ratio".format(cropped_area_fraction*100))
     
     return GeoBoundingBox(
-        GeoCoord(
-            new_lat_min, new_lon_min
-        ),
-        GeoCoord(
-            new_lat_max, new_lon_max
-        ),
+        new_lat_min, new_lon_min, new_lat_max, new_lon_max
     )
