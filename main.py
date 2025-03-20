@@ -2,9 +2,11 @@
 import sys
 import argparse
 from argparse import ArgumentParser
-from src.geo_coord_sys import GeoCoord, GeoBoundingBox
+
+from src.spacial.geo_coord_sys import GeoCoord, GeoBoundingBox
+from src.spacial.table_dimention import Table_Dimention
+
 from src.geography_to_gcode import convert_geography_to_gcode
-from src.table_dimention import Table_Dimention
 
 
 class Arguments(argparse.Namespace):
