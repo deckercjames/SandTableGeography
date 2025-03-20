@@ -176,3 +176,4 @@ cython_debug/
 # Output files
 *.png
 *.gcode
+cache/
