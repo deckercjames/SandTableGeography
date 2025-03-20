@@ -2,7 +2,7 @@
 import geopandas as gpd
 import osmnx as ox
 from osmnx._errors import InsufficientResponseError
-from src.geography.geo_coord_sys import GeoBoundingBox
+from src.geo_coord_sys import GeoBoundingBox
 from src.logger import get_logger
 import logging
 

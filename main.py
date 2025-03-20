@@ -2,8 +2,8 @@
 import sys
 import argparse
 from argparse import ArgumentParser
-from src.geography.geo_coord_sys import GeoCoord, GeoBoundingBox
-from src.geography.geograph_to_gcode import convert_geography_to_gcode
+from src.geo_coord_sys import GeoCoord, GeoBoundingBox
+from src.geography_to_gcode import convert_geography_to_gcode
 from src.table_dimention import Table_Dimention
 
 

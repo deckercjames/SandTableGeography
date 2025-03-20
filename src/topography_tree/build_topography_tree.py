@@ -1,7 +1,7 @@
 
-from src.geography.topography_tree.topography_tree_node import TopographyTreeNode
+from src.topography_tree.topography_tree_node import TopographyTreeNode
 from typing import List
-from src.geography.contour_calculation.contour_loop import ContourLoop, get_border_contour_loop
+from src.contour_calculation.contour_loop import ContourLoop, get_border_contour_loop
 from shapely.geometry import Polygon
 from src.table_dimention import Table_Dimention
 
