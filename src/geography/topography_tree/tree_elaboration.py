@@ -2,7 +2,7 @@ import numpy as np
 from scipy.spatial.distance import euclidean
 import math
 from src.geography.topography_tree.topography_tree_node import TopographyTreeNode
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 from src.geography.contour_calculation.contour_loop import ContourLoop
 from typing import List
 import numpy as np

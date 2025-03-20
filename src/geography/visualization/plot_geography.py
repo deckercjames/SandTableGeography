@@ -6,6 +6,11 @@ from matplotlib import cm
 from src.geography.geo_coord_sys import GeoBoundingBox
 matplotlib.use('Agg')  # Use the Agg backend
 import cartopy.crs as ccrs
+from src.logger import get_logger
+import os
+import logging
+
+logger = get_logger("geo plot", logging.DEBUG)
 
 def plot_topography_contours(lons_line_space, lats_line_space, elevation_data, bbox, interval=40, ax=None, 
                            colors='black', linewidths=0.8):
@@ -51,14 +56,9 @@ def plot_topography_contours(lons_line_space, lats_line_space, elevation_data, b
     return contour_lines
 
 
-def visualize_topography_with_lakes(bbox: GeoBoundingBox, elevation_data: npt.NDArray[np.float64], lakes_gdf, output_gcode_path: str):
+def visualize_topography_with_lakes(bbox: GeoBoundingBox, elevation_data: npt.NDArray[np.float64], lakes_gdf, debug_img_dir: str):
     """
     Visualize topography data with lakes and their areas.
-    
-    Parameters:
-    - bbox: tuple of (min_lon, min_lat, max_lon, max_lat)
-    - elevation_data: tuple of (lons_grid, lats_grid, elevations)
-    - lakes_gdf: GeoDataFrame containing lakes with area information
     """
     
     # Create geographic lines space
@@ -73,7 +73,7 @@ def visualize_topography_with_lakes(bbox: GeoBoundingBox, elevation_data: npt.ND
     cbar.set_label('Elevation (m)')
     
     # Add topographic contour lines
-    contour_lines = plot_topography_contours(lons_line_space, lats_line_space, elevation_data, bbox.get_all_values_tuple(), interval=50, 
+    plot_topography_contours(lons_line_space, lats_line_space, elevation_data, bbox.get_all_values_tuple(), interval=50, 
                            ax=ax, colors='black', linewidths=0.5)
 
     # Plot lakes
@@ -86,4 +86,8 @@ def visualize_topography_with_lakes(bbox: GeoBoundingBox, elevation_data: npt.ND
     ax.set_xlim(bbox.get_min_lon(), bbox.get_max_lon())
     ax.set_ylim(bbox.get_min_lat(), bbox.get_max_lat())
     
-    fig.savefig(output_gcode_path, dpi=300)
+    if debug_img_dir:
+        try:
+            fig.savefig(os.path.join(debug_img_dir, "geography.png"), dpi=300)
+        except OSError as err:
+            logger.error("Failed to save geography plot: {}".format(err))

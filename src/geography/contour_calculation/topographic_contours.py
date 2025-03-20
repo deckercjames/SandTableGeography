@@ -9,6 +9,8 @@ from typing import List
 matplotlib.use('Agg')  # Use the Agg backend
 from src.logger import get_logger
 import logging
+from matplotlib.figure import Figure
+from src.table_dimention import Table_Dimention
 
 logger = get_logger("topography", logging.DEBUG)
 
@@ -102,15 +104,6 @@ def break_apart_sub_loops(contour_lines) -> List[List[Path]]:
             loop_codes = codes[start_idx:end_idx]
             loop_path = Path(loop_vertices, loop_codes)
             
-            code_names = {
-                Path.MOVETO: "move to",
-                Path.LINETO: "line to",
-                Path.CLOSEPOLY: "close poly",
-                Path.CURVE3: "curve 3",
-                Path.CURVE4: "curve 4",
-                Path.STOP: "stop",
-            }
-            
             loops.append(loop_path)
             
         all_loops.append(loops)
@@ -126,8 +119,11 @@ def get_const_levels(elevation_data, interval):
     return np.arange(min_elev, max_elev + interval, interval)
 
 
-def get_contours(elevation_data: npt.NDArray[np.float64], x_line_space: npt.NDArray[np.float64], y_line_space: npt.NDArray[np.float64]) -> List[List[Path]]:
+def get_contours(elevation_data: npt.NDArray[np.float64], table_dim_rotated: Table_Dimention) -> tuple[List[List[Path]], Figure]:
     
+    x_line_space = np.linspace(0, table_dim_rotated.get_width_mm(), elevation_data.shape[1], dtype=np.float64)
+    y_line_space = np.linspace(table_dim_rotated.get_height_mm(), 0, elevation_data.shape[0], dtype=np.float64)
+
     # TODO this doesn't work if there is any really flat terrain
     # levels = compute_adaptive_levels(elevations, x_line_space, y_line_space)
     levels = get_const_levels(elevation_data, 20)
@@ -136,8 +132,7 @@ def get_contours(elevation_data: npt.NDArray[np.float64], x_line_space: npt.NDAr
     fig, ax = plt.subplots()
     contour_lines = ax.contour(x_line_space, y_line_space, elevation_data, levels=levels)
     ax.set_aspect('equal')
-    fig.savefig("output2.png", dpi=300)
     
     contour_lines = break_apart_sub_loops(contour_lines)
     
-    return contour_lines
+    return contour_lines, fig

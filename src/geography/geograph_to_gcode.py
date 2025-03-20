@@ -8,7 +8,7 @@ from src.geography.contour_calculation.loop_closer import merge_all_loop_fragmen
 import numpy as np
 import numpy.typing as npt
 from src.geography.visualization.visualize_contour import dump_contour_image, dump_multiple_contour_images
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention, get_rotated_table
 from src.geography.topography_tree.build_topography_tree import build_topography_tree
 from src.geography.topography_tree.tree_elaboration import generate_tree_spiral_path
 import logging
@@ -74,7 +74,7 @@ def rotate_points(points, width, height, rotation_degrees):
 
 def output_gcode(filename: str, path: npt.NDArray[np.float64]):
     try:
-        with open(filename+".gcode", "w") as file:
+        with open(filename, "w") as file:
             for location in path:
                 file.write("G01 X{:.3f} Y{:.3f}\n".format(*location))
     except OSError as err:
@@ -90,10 +90,23 @@ def get_total_length(path: npt.NDArray[np.float64]) -> float:
     return total_dist_mm
 
 
-def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention, rotation_deg: int, input_data_paths, output_gcode_filepath: str, debug_img_dir: str = None):
+def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention, rotation_deg: int, input_data_paths, output_gcode_filepath: str, debug_file_dir: str = None):
     
+    if debug_file_dir is not None and not os.path.isdir(debug_file_dir):
+        logger.debug("Creating directory for images: {}".format(debug_file_dir))
+        try:
+            os.mkdir(debug_file_dir)
+        except OSError as err:
+            logger.error("Could not create debug dir '{}'. Skipping debug files: {}".format(err))
+            debug_file_dir = None
+    
+    # Rotate table
+    table_dim_rotated = get_rotated_table(table_dim, rotation_deg)
+    if table_dim_rotated is None:
+        logger.fatal("Could not rotate table {} degrees".format(rotation_deg))
+
     # Crop the GeoBBox into the same aspect ratio as the table
-    bbox = crop_bounding_box_to_ratio(bbox, table_dim, rotation_deg)
+    bbox = crop_bounding_box_to_ratio(bbox, table_dim_rotated)
     
     # Get elevation data
     elevation_data = get_srtm_elevation_data(input_data_paths, bbox)
@@ -105,30 +118,26 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     lakes_gdf = get_lakes_with_area(bbox)
     
     # Visualize the topography with lakes
-    visualize_topography_with_lakes(bbox, elevation_data, lakes_gdf, output_gcode_filepath)
+    if debug_file_dir is not None:
+        visualize_topography_with_lakes(bbox, elevation_data, lakes_gdf, debug_file_dir)
     
-    # Create table lines space
-    if rotation_deg in (90, 270):
-        table_dim_rotated = Table_Dimention(table_dim.get_height_mm(), table_dim.get_width_mm())
-    else:
-        table_dim_rotated = table_dim
-
-    table_x_line_space = np.linspace(0, table_dim_rotated.get_width_mm(), elevation_data.shape[1], dtype=np.float64)
-    table_y_line_space = np.linspace(table_dim_rotated.get_height_mm(), 0, elevation_data.shape[0], dtype=np.float64)
-
-    contour_line_paths = get_contours(elevation_data, table_x_line_space, table_y_line_space)
+    contour_line_paths, contour_fig = get_contours(elevation_data, table_dim_rotated)
     
     # Visual debug
     # List List Path
-    if debug_img_dir is not None:
-        dump_multiple_contour_images(debug_img_dir, "contour", contour_line_paths, table_dim_rotated)
+    if debug_file_dir is not None:
+        try:
+            contour_fig.savefig(os.path.join(debug_file_dir, "topography"), dpi=300)
+        except OSError as err:
+            logger.error("Failed to save contour plot: {}".format(err))
+        dump_multiple_contour_images(debug_file_dir, "contour", contour_line_paths, table_dim_rotated)
     
     contour_loops = merge_all_loop_fragments(contour_line_paths, table_dim_rotated)
     
     # Visual debug
     # List List ContourLoop
-    if debug_img_dir is not None:
-        dump_multiple_contour_images(debug_img_dir, "defragged_contour", contour_loops, table_dim_rotated)
+    if debug_file_dir is not None:
+        dump_multiple_contour_images(debug_file_dir, "defragged_contour", contour_loops, table_dim_rotated)
         
     # Build topography tree
     topo_tree = build_topography_tree(contour_loops, table_dim_rotated)
@@ -139,17 +148,19 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     path = generate_tree_spiral_path(table_dim_rotated, topo_tree)
     
     # List Tuple Float
-    if debug_img_dir is not None:
-        dump_contour_image(debug_img_dir, "complete_path_rotated", path, table_dim_rotated)
+    if debug_file_dir is not None:
+        dump_contour_image(os.path.join(debug_file_dir, "complete_path_rotated.png"), path, table_dim_rotated)
     
     # Rotate
     path = rotate_points(path, table_dim_rotated.get_width_mm(), table_dim_rotated.get_height_mm(), rotation_deg)
     
+    output_file_basepath = os.path.splitext(output_gcode_filepath)[0]
+    
     # Numpy (Nx2)
-    dump_contour_image(os.path.curdir, output_gcode_filepath, path, table_dim_rotated)
+    dump_contour_image(output_file_basepath + ".png", path, table_dim_rotated)
     
     total_dist = get_total_length(path)
     logger.info("Total Distance {:.3f} (m)".format(total_dist/1000))
     
-    output_gcode(output_gcode_filepath, path)
+    output_gcode(output_file_basepath+".gcode", path)
     

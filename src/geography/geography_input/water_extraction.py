@@ -65,9 +65,10 @@ def get_lakes_with_area(bbox: GeoBoundingBox):
     # Print lake information
     if not lakes_gdf.empty:
         logger.info("Found {} lakes within the bounding box".format(len(lakes_gdf)))
-        for idx, row in lakes_gdf.iterrows():
+        for _, row in lakes_gdf.iterrows():
             name = row.get('name', 'Unnamed lake')
             logger.debug("  - {}: {:.2f} km²".format(name, row['area_km2']))
+        logger.warning("Lakes are not used yet in the gcode")
     else:
         logger.info("No lakes found within the specified bounding box.")
         
