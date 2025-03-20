@@ -3,7 +3,7 @@ from __future__ import annotations
 from matplotlib.path import Path
 from typing import List
 from src.geography.contour_calculation.contour_loop import ContourLoop, ContourLoopBuilder
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 from enum import Enum
 from src.geography.contour_calculation.linked_list import LinkedList, ListNode
 from src.logger import get_logger

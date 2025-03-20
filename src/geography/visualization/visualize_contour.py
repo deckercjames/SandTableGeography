@@ -4,7 +4,7 @@ from src.geography.geo_coord_sys import GeoCoord, GeoBoundingBox
 from PIL import Image, ImageDraw
 from matplotlib.path import Path
 from typing import List, Union
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 from src.geography.contour_calculation.contour_loop import ContourLoop
 import numpy as np
 import os
@@ -63,11 +63,7 @@ def dump_contour(img_draw: ImageDraw, contour_path: Union[Path, ContourLoop], he
         img_draw.ellipse(bounds, fill=(0, 255, 255))
     
 
-def dump_contour_image(debug_image_dir: str, image_name: str, contours: List[Path], table_dim: Table_Dimention):
-    
-    if not os.path.isdir(debug_image_dir):
-        logger.debug("Creating directory for images: {}".format(debug_image_dir))
-        os.mkdir(parents=True)
+def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_Dimention):
     
     SCALE = 1 # pixels per mm
     BUFFER = int(5 * SCALE)
@@ -84,10 +80,10 @@ def dump_contour_image(debug_image_dir: str, image_name: str, contours: List[Pat
     else:
         dump_contour(img_draw, contours, height, SCALE, BUFFER)
     
-    img.save(os.path.join("{}.png".format(image_name)))
+    img.save(image_name)
 
 
 def dump_multiple_contour_images(debug_image_dir: str, image_base_name: str, contours: List, table_dim: Table_Dimention):
     
     for i, item in enumerate(contours):
-        dump_contour_image("{}_{}".format(debug_image_dir, image_base_name, i), item, table_dim)
+        dump_contour_image("{}_{}.png".format(os.path.join(debug_image_dir, image_base_name), i), item, table_dim)

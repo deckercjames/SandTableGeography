@@ -2,7 +2,7 @@
 from matplotlib.path import Path
 from src.geography.contour_calculation.contour_loop import ContourLoop
 from src.geography.contour_calculation.loop_closer import merge_loop_fragments
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 
 def _get_loop_fragmment(verticies, close=False):
     codes = [Path.MOVETO] + [Path.LINETO for _ in verticies[1:]]

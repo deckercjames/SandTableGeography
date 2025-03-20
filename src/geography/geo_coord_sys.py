@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 from shapely.geometry import Polygon
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 import numpy as np
 from src.logger import get_logger
 import logging
@@ -62,7 +62,7 @@ class GeoBoundingBox:
         ])
 
 
-def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, table_dim: Table_Dimention, rotation_deg: int):
+def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, table_dim: Table_Dimention):
     """
     Crops the bounding box defined by latitude and longitude to the desired aspect ratio.
     
@@ -75,12 +75,7 @@ def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     tuple: (new_lat_min, new_lat_max, new_lon_min, new_lon_max)
     """
     
-    if rotation_deg in {0, 180}:
-        aspect_ratio = table_dim.get_width_mm() / table_dim.get_height_mm()
-    elif rotation_deg in {90, 270}:
-        aspect_ratio = table_dim.get_height_mm() / table_dim.get_width_mm()
-    else:
-        raise Exception("Bad table rotation bbox")
+    aspect_ratio = table_dim.get_aspect_ratio()
     
     lon_min, lat_min, lon_max, lat_max = bbox.get_all_values_tuple()
     

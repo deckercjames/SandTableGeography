@@ -4,7 +4,7 @@ import argparse
 from argparse import ArgumentParser
 from src.geography.geo_coord_sys import GeoCoord, GeoBoundingBox
 from src.geography.geograph_to_gcode import convert_geography_to_gcode
-from src.utils import Table_Dimention
+from src.table_dimention import Table_Dimention
 
 
 class Arguments(argparse.Namespace):
@@ -16,6 +16,7 @@ class Arguments(argparse.Namespace):
     rotation: int
     topography: str
     output: str
+    debug_dir: str
     
 
 def parse_table_dimentions(dimention: str) -> tuple[int, int]:
@@ -34,7 +35,8 @@ def main(argsv):
     parser.add_argument('-t', '--topography', type=str, help='Input topography data files')
     parser.add_argument('-o', '--output', type=str, default="output", help='Name of the output gcode file. Will append ".gcode" if not specifed. Will use name for other files')
     parser.add_argument('-r', '--rotation', type=int, choices=[0, 90, 180, 270], default=0, help='How to rotate the map in degress counter-clockwise')
-    args = parser.parse_args(argsv)
+    parser.add_argument('-d', '--debug-dir', type=str, default=None, help='A directory to write debug file to')
+    args: Arguments = parser.parse_args(argsv)
     
     # Moosilauke
     bbox = GeoBoundingBox(
@@ -48,7 +50,7 @@ def main(argsv):
     
     table_dim = Table_Dimention(*args.table_dim)
     
-    convert_geography_to_gcode(bbox, table_dim, args.rotation, args.topography, args.output)
+    convert_geography_to_gcode(bbox, table_dim, args.rotation, args.topography, args.output, debug_file_dir=args.debug_dir)
     
 
 
