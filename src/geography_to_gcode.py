@@ -1,16 +1,16 @@
 
-from src.geography.geography_input.elevation_extraction import get_srtm_elevation_data
-from src.geography.geography_input.water_extraction import get_lakes_with_area
-from src.geography.visualization.plot_geography import visualize_topography_with_lakes
-from src.geography.geo_coord_sys import GeoCoord, GeoBoundingBox, crop_bounding_box_to_ratio
-from src.geography.contour_calculation.topographic_contours import get_contours
-from src.geography.contour_calculation.loop_closer import merge_all_loop_fragments
+from src.geography_input.elevation_extraction import get_srtm_elevation_data
+from src.geography_input.water_extraction import get_lakes_with_area
+from src.visualization.plot_geography import visualize_topography_with_lakes
+from src.geo_coord_sys import GeoCoord, GeoBoundingBox, crop_bounding_box_to_ratio
+from src.contour_calculation.topographic_contours import get_contours
+from src.contour_calculation.loop_closer import merge_all_loop_fragments
 import numpy as np
 import numpy.typing as npt
-from src.geography.visualization.visualize_contour import dump_contour_image, dump_multiple_contour_images
+from src.visualization.visualize_contour import dump_contour_image, dump_multiple_contour_images
 from src.table_dimention import Table_Dimention, get_rotated_table
-from src.geography.topography_tree.build_topography_tree import build_topography_tree
-from src.geography.topography_tree.tree_elaboration import generate_tree_spiral_path
+from src.topography_tree.build_topography_tree import build_topography_tree
+from src.topography_tree.tree_elaboration import generate_tree_spiral_path
 import logging
 import sys
 from src.logger import get_logger
