@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 from matplotlib import cm
-from src.geo_coord_sys import GeoBoundingBox
+from src.spacial.geo_coord_sys import GeoBoundingBox
 matplotlib.use('Agg')  # Use the Agg backend
 import cartopy.crs as ccrs
 from src.logger import get_logger
