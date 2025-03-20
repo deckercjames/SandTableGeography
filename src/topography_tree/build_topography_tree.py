@@ -3,7 +3,7 @@ from src.topography_tree.topography_tree_node import TopographyTreeNode
 from typing import List
 from src.contour_calculation.contour_loop import ContourLoop, get_border_contour_loop
 from shapely.geometry import Polygon
-from src.table_dimention import Table_Dimention
+from src.spacial.table_dimention import Table_Dimention
 
 
 def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table_Dimention) -> TopographyTreeNode:

@@ -10,7 +10,7 @@ matplotlib.use('Agg')  # Use the Agg backend
 from src.logger import get_logger
 import logging
 from matplotlib.figure import Figure
-from src.table_dimention import Table_Dimention
+from src.spacial.table_dimention import Table_Dimention
 
 logger = get_logger("topography", logging.DEBUG)
 

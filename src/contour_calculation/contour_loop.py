@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import numpy.typing as npt
 from shapely.geometry import Polygon, Point
-from src.table_dimention import Table_Dimention
+from src.spacial.table_dimention import Table_Dimention
 import math
 from matplotlib.path import Path
 
