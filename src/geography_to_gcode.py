@@ -2,7 +2,7 @@
 from src.geography_input.elevation_extraction import get_srtm_elevation_data
 from src.geography_input.water_extraction import get_lakes_with_area
 from src.visualization.plot_geography import visualize_topography_with_lakes
-from src.spacial.geo_coord_sys import GeoCoord, GeoBoundingBox, crop_bounding_box_to_ratio
+from src.spacial.geo_coord_sys import GeoBoundingBox, crop_bounding_box_to_ratio
 from src.contour_calculation.topographic_contours import get_contours
 from src.contour_calculation.loop_closer import merge_all_loop_fragments
 import numpy as np
@@ -104,6 +104,7 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     table_dim_rotated = get_rotated_table(table_dim, rotation_deg)
     if table_dim_rotated is None:
         logger.fatal("Could not rotate table {} degrees".format(rotation_deg))
+        sys.exit(1)
 
     # Crop the GeoBBox into the same aspect ratio as the table
     bbox = crop_bounding_box_to_ratio(bbox, table_dim_rotated)

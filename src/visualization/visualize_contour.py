@@ -1,6 +1,5 @@
 
 
-from src.spacial.geo_coord_sys import GeoCoord, GeoBoundingBox
 from PIL import Image, ImageDraw
 from matplotlib.path import Path
 from typing import List, Union
