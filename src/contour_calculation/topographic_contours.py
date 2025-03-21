@@ -20,10 +20,10 @@ def compute_adaptive_levels(elevations, x_line_space, y_line_space, max_distance
     
     Parameters:
     -----------
-    Z : 2D array
+    elevations : 2D array
         The scalar field to contour
-    x_grid, y_grid : 2D arrays
-        The x and y coordinates for Z
+    x_line_space, y_line_space : 1D arrays
+        lengths must corrispond to the width and hight of elevations
     max_distance : float
         Maximum allowed distance between adjacent contour lines
         

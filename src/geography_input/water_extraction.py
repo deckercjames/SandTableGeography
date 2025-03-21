@@ -14,7 +14,7 @@ def get_lakes_with_area(bbox: GeoBoundingBox):
     and calculate their areas.
     
     Parameters:
-    - bbox: tuple of (min_lon, min_lat, max_lon, max_lat)
+    - bbox: GeoBoundingBox
     
     Returns:
     - lakes_gdf: GeoDataFrame containing lakes with area information

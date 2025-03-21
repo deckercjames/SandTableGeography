@@ -147,17 +147,12 @@ def get_srtm_elevation_data(srtm_files, bbox: GeoBoundingBox) -> npt.NDArray[np.
         List of paths to SRTM data files (.tif or .hgt format),
         or path to a directory containing SRTM files,
         or a single file path.
-    bounds : tuple
-        Bounding box coordinates (left, bottom, right, top) in WGS84 (EPSG:4326).
-        If None, the entire merged dataset will be used.
+    bbox : GeoBoundingBox
+        Bounding box to get data for
     
     Returns:
     --------
-    tuple
-        (lons_grid, lats_grid, elevation_data) where:
-        - lons_grid: 2D numpy array of longitudes with shape matching elevation_data
-        - lats_grid: 2D numpy array of latitudes with shape matching elevation_data
-        - elevation_data: 2D numpy array of elevation values in meters
+    npt.NDArray[np.float64]
     """
     norm_srtm_files = _normalize_file_path(srtm_files)
     

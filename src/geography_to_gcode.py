@@ -107,7 +107,7 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
         sys.exit(1)
 
     # Crop the GeoBBox into the same aspect ratio as the table
-    bbox = crop_bounding_box_to_ratio(bbox, table_dim_rotated)
+    bbox = crop_bounding_box_to_ratio(bbox, table_dim_rotated.get_aspect_ratio())
     
     # Get elevation data
     elevation_data = get_srtm_elevation_data(input_data_paths, bbox)
