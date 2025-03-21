@@ -1,11 +1,7 @@
 
 from __future__ import annotations
-import numpy as np
-import numpy.typing as npt
 from typing import List
 from src.contour_calculation.contour_loop import ContourLoop
-from collections import deque
-import pickle
 
 class TopographyTreeNode:
     def __init__(self, loop: ContourLoop):
@@ -26,15 +22,31 @@ class TopographyTreeNode:
         for child in self.children:
             size += child.get_size()
         return size
-        
+    
+    
+    def get_max_depth(self) -> int:
+        max_depth = 0
+        for child in self.children:
+            max_depth = max(max_depth, child.get_max_depth())
+        return max_depth + 1
+    
         
     def unravel_tree(self) -> List[tuple[ContourLoop, bool]]:
+        """
+        Unravels the tree, in a modified post-and-in-order-traversal, adding the node data (loop)
+        to the list. The boolean indicates if it was added as part of post-order traversal.
+        (i.e. it is the last time the traversal hits it). The children of each node
+        are sorted by the deepest branch from them
+        """
+        child_idx_order = [(child.get_max_depth(), i) for i, child in enumerate(self.children)]
+        child_idx_order.sort()
+        child_idx_order = child_idx_order[::-1]
+        
         tree_path = []
-        if len(self.children) > 0:
-            tree_path.extend(self.children[0].unravel_tree())
-            for child in self.children[1:]:
+        for i, (_, child_idx) in enumerate(child_idx_order):
+            tree_path.extend(self.children[child_idx].unravel_tree())
+            if i < (len(child_idx_order) - 1):
                 tree_path.append((self.loop, False))
-                tree_path.extend(child.unravel_tree())
         tree_path.append((self.loop, True))
         return tree_path
             
