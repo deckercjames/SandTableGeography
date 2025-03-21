@@ -14,7 +14,7 @@ import logging
 logger = get_logger("elaborator", logging.DEBUG)
 
 
-def find_best_transition(from_loop, to_loop, sample_size=50):
+def find_best_transition(from_loop, to_loop, sample_size=50) -> tuple[int, int]:
     """
     Find a good transition point between two loops using sampling and local refinement.
     
@@ -24,7 +24,7 @@ def find_best_transition(from_loop, to_loop, sample_size=50):
         sample_size: Number of points to sample from from_loop
         
     Returns:
-        Tuple of (from_idx, to_idx, score) representing the best transition points
+        Tuple of (from_idx, to_idx) representing the best transition points
     """
     # Convert loops to numpy arrays
     from_loop_np = np.array(from_loop)
@@ -85,7 +85,7 @@ def find_best_transition(from_loop, to_loop, sample_size=50):
     return (current_from_idx, current_to_idx)
 
 
-def find_best_to_point(from_loop_np, to_loop_np, from_idx):
+def find_best_to_point(from_loop_np, to_loop_np, from_idx: int) -> tuple[int, float]:
     """
     Helper function to find the best to_point for a given from_point.
     

@@ -49,21 +49,18 @@ class GeoBoundingBox:
         ])
 
 
-def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, table_dim: Table_Dimention):
+def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, aspect_ratio: float) -> GeoBoundingBox:
     """
     Crops the bounding box defined by latitude and longitude to the desired aspect ratio.
     
     Parameters:
-    lat_min, lat_max: float - the minimum and maximum latitudes of the original bounding box
-    lon_min, lon_max: float - the minimum and maximum longitudes of the original bounding box
+    bbox: GeoBoundingBox
     aspect_ratio: float - the desired width/height ratio of the cropped bounding box
     
     Returns:
-    tuple: (new_lat_min, new_lat_max, new_lon_min, new_lon_max)
+    GeoBoundingBox
     """
-    
-    aspect_ratio = table_dim.get_aspect_ratio()
-    
+
     lon_min, lat_min, lon_max, lat_max = bbox.get_all_values_tuple()
     
     # Compute the initial height (latitude difference) and width (longitude difference) in degrees

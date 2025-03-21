@@ -79,7 +79,10 @@ def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_D
     else:
         dump_contour(img_draw, contours, height, SCALE, BUFFER)
     
-    img.save(image_name)
+    try:
+        img.save(image_name)
+    except OSError as err:
+        logger.error("Could not write contour image: {}".format(err))
 
 
 def dump_multiple_contour_images(debug_image_dir: str, image_base_name: str, contours: List, table_dim: Table_Dimention):
