@@ -90,7 +90,7 @@ def get_total_length(path: npt.NDArray[np.float64]) -> float:
     return total_dist_mm
 
 
-def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention, rotation_deg: int, input_data_paths, output_gcode_filepath: str, debug_file_dir: str = None):
+def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention, rotation_deg: int, input_data_paths, output_gcode_filepath: str, num_contours: int = 20, debug_file_dir: str = None):
     
     if debug_file_dir is not None and not os.path.isdir(debug_file_dir):
         logger.debug("Creating directory for images: {}".format(debug_file_dir))
@@ -122,7 +122,7 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     if debug_file_dir is not None:
         visualize_topography_with_lakes(bbox, elevation_data, lakes_gdf, debug_file_dir)
     
-    contour_line_paths, contour_fig = get_contours(elevation_data, table_dim_rotated)
+    contour_line_paths, contour_fig = get_contours(elevation_data, table_dim_rotated, num_contours)
     
     # Visual debug
     # List List Path

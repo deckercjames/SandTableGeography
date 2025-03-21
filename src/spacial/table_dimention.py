@@ -39,7 +39,7 @@ class Table_Dimention:
             return pos
         pos += self.get_height_mm()
         if not on_bottom:
-            raise Exception("Point is not on border")
+            raise Exception("Point {} is not on border".format(location))
         pos += (self.get_width_mm() - x0)
         return pos
     

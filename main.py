@@ -3,7 +3,7 @@ import sys
 import argparse
 from argparse import ArgumentParser
 
-from src.spacial.geo_coord_sys import GeoCoord, GeoBoundingBox
+from src.spacial.geo_coord_sys import GeoBoundingBox
 from src.spacial.table_dimention import Table_Dimention
 
 from src.geography_to_gcode import convert_geography_to_gcode
@@ -18,6 +18,7 @@ class Arguments(argparse.Namespace):
     rotation: int
     topography: str
     output: str
+    num_contours: int
     debug_dir: str
     
 
@@ -38,6 +39,7 @@ def main(argsv):
     parser.add_argument('-o', '--output', type=str, default="output", help='Name of the output gcode file. Will append ".gcode" if not specifed. Will use name for other files')
     parser.add_argument('-r', '--rotation', type=int, choices=[0, 90, 180, 270], default=0, help='How to rotate the map in degress counter-clockwise')
     parser.add_argument('-d', '--debug-dir', type=str, default=None, help='A directory to write debug file to')
+    parser.add_argument('-n', '--num-contours', type=int, default=30, help='The number of elevation contours to use')
     args: Arguments = parser.parse_args(argsv)
     
     # Moosilauke
@@ -47,7 +49,7 @@ def main(argsv):
     
     table_dim = Table_Dimention(*args.table_dim)
     
-    convert_geography_to_gcode(bbox, table_dim, args.rotation, args.topography, args.output, debug_file_dir=args.debug_dir)
+    convert_geography_to_gcode(bbox, table_dim, args.rotation, args.topography, args.output, num_contours=args.num_contours, debug_file_dir=args.debug_dir)
     
 
 

@@ -11,6 +11,7 @@ from src.logger import get_logger
 import logging
 from matplotlib.figure import Figure
 from src.spacial.table_dimention import Table_Dimention
+from matplotlib.contour import QuadContourSet
 
 logger = get_logger("topography", logging.DEBUG)
 
@@ -67,7 +68,7 @@ def compute_adaptive_levels(elevations, x_line_space, y_line_space, max_distance
     return levels
 
 
-def break_apart_sub_loops(contour_lines) -> List[List[Path]]:
+def break_apart_sub_loops(contour_lines: QuadContourSet) -> List[List[Path]]:
     
     all_loops = []
     
@@ -99,9 +100,16 @@ def break_apart_sub_loops(contour_lines) -> List[List[Path]]:
             # End index is either the next MOVETO or the end of the array
             end_idx = moveto_indices[i+1] if i+1 < len(moveto_indices) else len(vertices)
             
-            # Create a new path for this loop
             loop_vertices = vertices[start_idx:end_idx]
             loop_codes = codes[start_idx:end_idx]
+            
+            # pyplot contours don't always use Path.CLOSEPOLY. We expect this to be
+            # correct later, so set it now
+            if np.allclose(loop_vertices[0], loop_vertices[-1]):
+                loop_codes[-1] = Path.CLOSEPOLY
+            
+            # Create a new path for this loop
+            # loop_codes = codes[start_idx:end_idx]
             loop_path = Path(loop_vertices, loop_codes)
             
             loops.append(loop_path)
@@ -113,20 +121,14 @@ def break_apart_sub_loops(contour_lines) -> List[List[Path]]:
     return all_loops
         
 
-def get_const_levels(elevation_data, interval):
-    min_elev = np.floor(elevation_data.min() / interval) * interval
-    max_elev = np.ceil(elevation_data.max() / interval) * interval
-    return np.arange(min_elev, max_elev + interval, interval)
-
-
-def get_contours(elevation_data: npt.NDArray[np.float64], table_dim_rotated: Table_Dimention) -> tuple[List[List[Path]], Figure]:
+def get_contours(elevation_data: npt.NDArray[np.float64], table_dim_rotated: Table_Dimention, num_contours: int) -> tuple[List[List[Path]], Figure]:
     
     x_line_space = np.linspace(0, table_dim_rotated.get_width_mm(), elevation_data.shape[1], dtype=np.float64)
     y_line_space = np.linspace(table_dim_rotated.get_height_mm(), 0, elevation_data.shape[0], dtype=np.float64)
 
     # TODO this doesn't work if there is any really flat terrain
     # levels = compute_adaptive_levels(elevations, x_line_space, y_line_space)
-    levels = get_const_levels(elevation_data, 20)
+    levels = np.linspace(elevation_data.min(), elevation_data.max(), num_contours)
     
     # Plot contour lines
     fig, ax = plt.subplots()
