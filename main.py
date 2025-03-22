@@ -24,8 +24,12 @@ class Arguments(argparse.Namespace):
 
 def parse_table_dimentions(dimention: str) -> tuple[int, int]:
     items = dimention.split("x")
-    assert len(items) == 2
-    return (int(items[0]), int(items[1]))
+    if len(items) != 2:
+        raise argparse.ArgumentTypeError("Requires two dimentions spearated by an 'x'")
+    try:
+        return (int(items[0]), int(items[1]))
+    except ValueError:
+        raise argparse.ArgumentTypeError("Invalid integer value. Must take the form WIDTHxHIEGHT")
 
 
 def main(argsv):
@@ -35,14 +39,13 @@ def main(argsv):
     parser.add_argument('lat_1', type=float, help='Second latitude bounding edge')
     parser.add_argument('lon_1', type=float, help='Second longitude bounding edge')
     parser.add_argument('table_dim', type=parse_table_dimentions, help='table dimentions specified in millimteres WIDTHxHEIGHT')
-    parser.add_argument('-t', '--topography', type=str, help='Input topography data files')
-    parser.add_argument('-o', '--output', type=str, default="output", help='Name of the output gcode file. Will append ".gcode" if not specifed. Will use name for other files')
+    parser.add_argument('-t', '--topography', type=str, default="./input_data/", help='Input topography data files')
+    parser.add_argument('-o', '--output', type=str, default="output.gcode", help='Name of the output gcode file. Will append ".gcode" if not specifed. Will use name for other files')
     parser.add_argument('-r', '--rotation', type=int, choices=[0, 90, 180, 270], default=0, help='How to rotate the map in degress counter-clockwise')
     parser.add_argument('-d', '--debug-dir', type=str, default=None, help='A directory to write debug file to')
     parser.add_argument('-n', '--num-contours', type=int, default=30, help='The number of elevation contours to use')
     args: Arguments = parser.parse_args(argsv)
     
-    # Moosilauke
     bbox = GeoBoundingBox(
         args.lat_0, args.lon_0, args.lat_1, args.lon_1
     )

@@ -177,3 +177,10 @@ cython_debug/
 *.png
 *.gcode
 cache/
+
+!/documentation/*
+
+# Input files
+/input_data/*
+# Keep one file as an example
+!/input_data/n44_w072_1arc_v3.tif
