@@ -31,4 +31,4 @@ jobs:
     - name: Run tests with pytest
       run: |
         source venv/bin/activate  # Activate the virtual environment
-        pytest  # Run the tests with pytest
+        python3 -m pytest  # Run the tests with pytest
