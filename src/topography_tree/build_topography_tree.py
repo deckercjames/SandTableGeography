@@ -4,6 +4,9 @@ from typing import List
 from src.contour_calculation.contour_loop import ContourLoop, get_border_contour_loop
 from shapely.geometry import Polygon
 from src.spacial.table_dimention import Table_Dimention
+from src.logger import get_logger
+import logging
+logger = get_logger("topo tree", logging.DEBUG)
 
 
 def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table_Dimention) -> TopographyTreeNode:
@@ -17,6 +20,10 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
     leaf_nodes = topo_tree.children
     
     for loop_layer in loop_layers[1:]:
+        
+        if len(leaf_nodes) == 0:
+            logger.error("No current leaf nodes. Skipping further tree generation")
+            break
         
         new_leaf_nodes = []
         
@@ -35,7 +42,7 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
                 break
             
             else:
-                raise Exception("loop did not fit in tree")
+                logger.warning("Could not fit loop of length {} into any {} leaves of the tree".format(len(loop.get_vertices()), len(leaf_nodes)))
             
         leaf_nodes = new_leaf_nodes
         
