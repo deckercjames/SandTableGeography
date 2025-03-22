@@ -54,11 +54,6 @@ python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550
 
 # Testing
 
-### Requires pytest
-```
-pip install pytest
-```
-
 ### Run unit tests
 ```
 python3 -m pytest
