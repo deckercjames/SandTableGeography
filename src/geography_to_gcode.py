@@ -158,7 +158,7 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
     output_file_basepath = os.path.splitext(output_gcode_filepath)[0]
     
     # Numpy (Nx2)
-    dump_contour_image(output_file_basepath + ".png", path, table_dim_rotated)
+    dump_contour_image(output_file_basepath + ".png", path, table_dim)
     
     total_dist = get_total_length(path)
     logger.info("Total Distance {:.3f} (m)".format(total_dist/1000))
