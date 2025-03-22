@@ -1,6 +1,6 @@
 
 # SandTableGeography
-A way to convert topographic maps into gcode for a kinetic sand table. This take in the input data as `.tif` or `.hgt` files and creates a single continuous path in gcode that traces to topography lines. The given geographic bounding box can be rotated in increments of 90 degrees and will be cropped to fit the exact dimentions of the specified table.
+A way to convert topographic maps into gcode for a kinetic sand table. This takes input data as `.tif` or `.hgt` files and creates a single continuous path in gcode that traces to topography lines. The given geographic bounding box can be rotated in increments of 90 degrees and will be cropped to fit the exact dimentions of the specified table.
 
 ### Visual
 ![mt moosilauke on sand table](documentation/moosilauke_physical.png "Mt. Moosilauke on Table")
