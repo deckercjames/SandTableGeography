@@ -4,7 +4,6 @@ from matplotlib.path import Path
 from typing import List
 from src.contour_calculation.contour_loop import ContourLoop, ContourLoopBuilder
 from src.spacial.table_dimention import Table_Dimention
-from enum import Enum
 from src.contour_calculation.linked_list import LinkedList, ListNode
 from src.logger import get_logger
 import logging
