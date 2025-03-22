@@ -7,3 +7,4 @@ Pillow==11.1.0
 rasterio==1.4.3
 scipy==1.15.2
 Shapely==2.0.7
+pytest=8.3.3
