@@ -25,7 +25,7 @@ def _draw_line(img_draw: ImageDraw, location0, location1, color, height, scale, 
     img_draw.line((x0, height - y0, x1, height - y1), fill=color)
 
 
-def dump_contour(img_draw: ImageDraw, contour_path: Union[Path, ContourLoop], height: int, scale: float, buffer: int):
+def draw_contour_on_image(img_draw: ImageDraw, contour_path: Union[Path, ContourLoop], height: int, scale: float, buffer: int):
     
     if type(contour_path) is Path:
         path_vertices = contour_path.vertices
@@ -75,9 +75,9 @@ def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_D
     
     if type(contours[0]) is Path or type(contours[0]) is ContourLoop:
         for contour in contours:
-            dump_contour(img_draw, contour, height, SCALE, BUFFER)
+            draw_contour_on_image(img_draw, contour, height, SCALE, BUFFER)
     else:
-        dump_contour(img_draw, contours, height, SCALE, BUFFER)
+        draw_contour_on_image(img_draw, contours, height, SCALE, BUFFER)
     
     try:
         img.save(image_name)

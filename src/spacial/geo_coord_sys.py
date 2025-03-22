@@ -1,7 +1,6 @@
 
 from dataclasses import dataclass
 from shapely.geometry import Polygon
-from src.spacial.table_dimention import Table_Dimention
 import numpy as np
 from src.logger import get_logger
 import logging

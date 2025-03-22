@@ -6,6 +6,7 @@ from src.spacial.table_dimention import Table_Dimention
 from src.contour_calculation.contour_loop import ContourLoop
 from typing import List
 import numpy as np
+import numpy.typing as npt
 from scipy.spatial.distance import euclidean
 import math
 from src.logger import get_logger
@@ -223,7 +224,14 @@ def find_shortest_transition(from_loop: ContourLoop, to_loop: ContourLoop) -> tu
     return best_pair
 
 
-def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyTreeNode) -> List[tuple[float, float]]:
+def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyTreeNode) -> npt.NDArray[np.float64]:
+    """
+    Walks the given tree and creates a single continuous path that traverses
+    all the contours.
+    
+    Returns numpy array (nx2):
+        Each row contians an (x,y) position in millimeters
+    """
     
     path = []
     
@@ -260,4 +268,4 @@ def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyT
         circ_length = (curr_exit_idx - curr_enter_idx + num_curr_vertices) % num_curr_vertices
         path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx+1), axis=0)[:circ_length])
 
-    return path
+    return np.array(path)
