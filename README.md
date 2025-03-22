@@ -41,7 +41,7 @@ pip install -r ./requirements.txt
 
 # Example: Mt. Moosilauke
 ```
-python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550
+python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550 -r 90
 ```
 
 ### Expected Output
