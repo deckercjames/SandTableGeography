@@ -52,6 +52,10 @@ python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550 -r 90
 ![mt moosilauke path representation](documentation/moosilauke_path_rep.png "Mt. Moosilauke")
 *North is to the left*
 
+# Limitations
+- Currently only works for rectangular sand tables
+- Patterns can only be rotated in increments of 90 degrees
+
 # Testing
 
 ### Run unit tests
