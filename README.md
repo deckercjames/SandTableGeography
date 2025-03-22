@@ -55,6 +55,7 @@ python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550 -r 90
 # Limitations
 - Currently only works for rectangular sand tables
 - Patterns can only be rotated in increments of 90 degrees
+- Water features are not handled
 
 # Testing
 
