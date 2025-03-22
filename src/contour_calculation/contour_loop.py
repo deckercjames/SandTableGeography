@@ -31,7 +31,8 @@ class ContourLoop:
         return self.border_indices
     
     def contains(self, point: npt.NDArray[np.float64]):
-        return self.polygon.contains(Point(*point))
+        point = Point(*point)
+        return self.polygon.contains(point) or self.polygon.touches(point)
     
     def __eq__(self, other: ContourLoop):
         return np.allclose(self.vertices, other.vertices) and set(self.border_indices) == set(other.border_indices)
