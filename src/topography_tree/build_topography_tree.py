@@ -8,6 +8,9 @@ from src.logger import get_logger
 import logging
 logger = get_logger("topo tree", logging.DEBUG)
 
+# For a loop to be included in the tree, it must me at least this many mm squared in area
+CRITICAL_LOOP_AREA = 10
+
 
 def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table_Dimention) -> TopographyTreeNode:
     
@@ -19,6 +22,8 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
         
     leaf_nodes = topo_tree.children
     
+    too_small_loop_count = 0
+    
     for loop_layer in loop_layers[1:]:
         
         if len(leaf_nodes) == 0:
@@ -29,6 +34,10 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
         
         # Add each loop onto a tree
         for loop in loop_layer:
+            
+            if loop.get_area() < CRITICAL_LOOP_AREA:
+                too_small_loop_count += 1
+                continue
             
             # Check all leaf nodes to see which one to add this loop to
             for leaf in leaf_nodes:
@@ -45,5 +54,8 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
                 logger.warning("Could not fit loop of length {} into any {} leaves of the tree".format(len(loop.get_vertices()), len(leaf_nodes)))
             
         leaf_nodes = new_leaf_nodes
-        
+    
+    if too_small_loop_count > 0:
+        logger.debug("Skipped {} loops because they were too small".format(too_small_loop_count))
+    
     return topo_tree

@@ -30,6 +30,9 @@ class ContourLoop:
     def get_border_indices(self):
         return self.border_indices
     
+    def get_area(self) -> float:
+        return self.polygon.area
+    
     def contains(self, point: npt.NDArray[np.float64]):
         point = Point(*point)
         return self.polygon.contains(point) or self.polygon.touches(point)
