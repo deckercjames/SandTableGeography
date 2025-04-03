@@ -42,11 +42,3 @@ class Table_Dimention:
     
     def get_aspect_ratio(self) -> float:
         return self.width_mm / self.height_mm
-
-
-def get_rotated_table(table_dim: Table_Dimention, rotation_deg: int) -> Table_Dimention:
-    if rotation_deg in (0, 180):
-        return table_dim
-    if rotation_deg in {90, 270}:
-        return Table_Dimention(table_dim.get_height_mm(), table_dim.get_width_mm())
-    return None
