@@ -22,7 +22,7 @@ def _draw_line(img_draw: ImageDraw, location0, location1, color, height_mm, scal
     x1 = int((x1 + buffer) * scale)
     y1 = int((height_mm - y1 + buffer) * scale)
     
-    img_draw.line((x0, y0, x1, y1), fill=color)
+    img_draw.line((x0, y0, x1, y1), fill=color, width = (scale // 2))
 
 
 def draw_contour_on_image(img_draw: ImageDraw, contour_path: Union[Path, ContourLoop], height_mm: int, scale: float, buffer: int):
