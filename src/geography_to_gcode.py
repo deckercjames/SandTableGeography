@@ -117,6 +117,7 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
             file.write("; Latitude:  [{:.06f}, {:.06f}]\n".format(bbox.get_min_lat(), bbox.get_max_lat()))
             file.write("; Longitude: [{:.06f}, {:.06f}]\n".format(bbox.get_min_lon(), bbox.get_max_lon()))
             file.write("; Total Path Distance (meters): {:.3f}\n".format(total_dist_meters))
+            file.write("; North is to the {}\n".format({0:"top", 90:"left", 180:"bottom", 270:"right"}[rotation_deg]))
             file.write(";\n\n")
             for location in path:
                 file.write("G01 X{:.3f} Y{:.3f}\n".format(*location))
