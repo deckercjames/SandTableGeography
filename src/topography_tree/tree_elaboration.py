@@ -171,7 +171,7 @@ def find_best_to_point(from_loop_np, to_loop_np, from_idx: int) -> tuple[int, fl
 
 
 
-def find_best_border_transition(table_dim: Table_Dimention, from_loop: ContourLoop, to_loop: ContourLoop) -> tuple[int, int]:
+def find_best_border_transition(from_loop: ContourLoop, to_loop: ContourLoop) -> tuple[int, int]:
     
     best_dist = float('inf')
     best_pair = None
@@ -202,7 +202,7 @@ def find_best_border_transition(table_dim: Table_Dimention, from_loop: ContourLo
                 
     if best_pair is None:
         raise Exception("Could not find border link")
-        
+
     return best_pair        
 
 
@@ -224,7 +224,7 @@ def find_shortest_transition(from_loop: ContourLoop, to_loop: ContourLoop) -> tu
     return best_pair
 
 
-def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyTreeNode) -> npt.NDArray[np.float64]:
+def generate_tree_spiral_path(root_node: TopographyTreeNode) -> npt.NDArray[np.float64]:
     """
     Walks the given tree and creates a single continuous path that traverses
     all the contours.
@@ -251,7 +251,7 @@ def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyT
         
         # If they both touch the border, then get a total border traversal
         if current_contour_loop.touches_border() and next_contour_loop.touches_border():
-            curr_exit_idx, next_enter_idx = find_best_border_transition(table_dim, current_contour_loop, next_contour_loop)
+            curr_exit_idx, next_enter_idx = find_best_border_transition(current_contour_loop, next_contour_loop)
         elif not must_complete:
             curr_exit_idx, next_enter_idx = find_shortest_transition(current_contour_loop, next_contour_loop)
         else:
@@ -262,10 +262,10 @@ def generate_tree_spiral_path(table_dim: Table_Dimention, root_node: TopographyT
             continue
         
         if must_complete:
-            path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx+1), axis=0))
+            path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx), axis=0))
         
         num_curr_vertices = len(current_contour_loop.get_vertices())
-        circ_length = (curr_exit_idx - curr_enter_idx + num_curr_vertices) % num_curr_vertices
-        path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx+1), axis=0)[:circ_length])
+        circ_length = (curr_exit_idx - curr_enter_idx + num_curr_vertices + 1) % num_curr_vertices
+        path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx), axis=0)[:circ_length])
 
     return np.array(path)
