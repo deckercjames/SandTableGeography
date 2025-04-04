@@ -81,7 +81,7 @@ def convert_elevation_data_to_path(elevation_data: npt.NDArray[np.float64], tabl
     # Debug
     # topo_tree.pretty_print_tree()
         
-    path = generate_tree_spiral_path(table_dim, topo_tree)
+    path = generate_tree_spiral_path(topo_tree)
     
     # List Tuple Float
     if debug_file_dir is not None:
