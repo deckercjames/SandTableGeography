@@ -25,7 +25,7 @@ pip install -r ./requirements.txt
 | Longitude 1 | Float | -71.85694 |
 | Latitude 2 | Float | 43.99183 |
 | Longitude 2 | Float | -71.80904 |
-| Table Dimention |  Dimention WIDTHxHEIGHT in millimeters | 880x550 |
+| Table Dimention |  WIDTHxHEIGHT or DIAMETER in millimeters | 880x550 |
 
 
 ### Optionals
@@ -53,9 +53,9 @@ python3 ./main.py 44.04207 -71.85694 43.99183 -71.80904 880x550 -r 90
 *North is to the left*
 
 # Limitations
-- Currently only works for rectangular sand tables
 - Patterns can only be rotated in increments of 90 degrees
 - Water features are not handled
+- Does not handle concave topograpy features
 
 # Testing
 
