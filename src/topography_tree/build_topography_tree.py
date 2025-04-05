@@ -42,7 +42,7 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
             # Check all leaf nodes to see which one to add this loop to
             for leaf in leaf_nodes:
                 
-                if not leaf.loop.contains(loop.get_sample_vertex()):
+                if not leaf.loop.contains(loop):
                     continue
                 
                 node = TopographyTreeNode(loop)

@@ -30,9 +30,7 @@ def test_basic():
     table_dim = Table_Dimention(200, 100)
     elevation_data = _generate_interesting_elevation_data(table_dim.get_width_mm(), table_dim.get_height_mm())
     
-    recv_path = convert_elevation_data_to_path(elevation_data, table_dim, debug_file_dir="./debug_dir")
-    
-    dump_contour_image("test1.png", recv_path, table_dim)
+    recv_path = convert_elevation_data_to_path(elevation_data, table_dim)
     
     assert len(recv_path) == 5731
     # Just test a few points stay the same for regression
@@ -47,8 +45,6 @@ def test_basic_closer_contours():
     elevation_data = _generate_interesting_elevation_data(table_dim.get_width_mm(), table_dim.get_height_mm())
     
     recv_path = convert_elevation_data_to_path(elevation_data, table_dim, num_contours=25)
-    
-    dump_contour_image("test2.png", recv_path, table_dim)
     
     assert len(recv_path) == 7345
     # Just test a few points stay the same for regression

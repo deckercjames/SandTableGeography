@@ -8,19 +8,13 @@ import math
 from matplotlib.path import Path
 
 class ContourLoop:
-    def __init__(self, vertices, sample_vertex=None, border_indices=[]):
+    def __init__(self, vertices, border_indices=[]):
         self.vertices = vertices
         if type(self.vertices) is list:
             self.vertices = np.array(self.vertices)
-        self.sample_vertex = sample_vertex
-        if self.sample_vertex is None:
-            self.sample_vertex = vertices[len(vertices) // 2]
         self.polygon = Polygon(vertices)
         self.border_indices = border_indices
 
-    def get_sample_vertex(self):
-        return self.sample_vertex
-    
     def get_vertices(self):
         return self.vertices
     
@@ -33,8 +27,10 @@ class ContourLoop:
     def get_area(self) -> float:
         return self.polygon.area
     
-    def contains(self, point: npt.NDArray[np.float64]):
-        point = Point(*point)
+    def contains(self, loop: ContourLoop):
+        # each loop is guarenteed to be complete inside or outside another
+        # so we only need to test if one point is inside the current loop
+        point = Point(*loop.get_vertices()[0])
         return self.polygon.contains(point) or self.polygon.touches(point)
     
     def __eq__(self, other: ContourLoop):
@@ -59,7 +55,6 @@ def get_border_contour_loop(table_dim: Table_Dimention) -> ContourLoop:
 class ContourLoopBuilder:
     def __init__(self, table_dim: Table_Dimention):
         self.table_dim = table_dim
-        self.sample_point = None
         self.path = []
 
     
@@ -95,9 +90,6 @@ class ContourLoopBuilder:
         if len(self.path) > 0:
             self._extend_corner_links(self.path[-1], path.vertices[0])
             
-        if self.sample_point is None:
-            self.sample_point = path.vertices[len(path.vertices) // 2]
-        
         self.path.extend(path.vertices)
         
         
@@ -117,6 +109,5 @@ class ContourLoopBuilder:
         
         return ContourLoop(
             self.path,
-            sample_vertex=self.sample_point,
             border_indices=border_indices,
         )

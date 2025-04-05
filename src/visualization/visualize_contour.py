@@ -13,18 +13,6 @@ import logging
 logger = get_logger("visualize", logging.DEBUG)
 
 
-def _draw_line(img_draw: ImageDraw, location0, location1, color, height_mm, scale, buffer):
-    x0, y0 = location0
-    x1, y1 = location1
-    
-    x0 = int((x0 + buffer) * scale)
-    y0 = int((height_mm - y0 + buffer) * scale)
-    x1 = int((x1 + buffer) * scale)
-    y1 = int((height_mm - y1 + buffer) * scale)
-    
-    img_draw.line((x0, y0, x1, y1), fill=color, width = (scale // 2))
-
-
 def draw_contour_on_image(img_draw: ImageDraw, contour_path: Union[Path, ContourLoop], height_mm: int, scale: float, buffer: int):
     
     if type(contour_path) is Path:
@@ -46,20 +34,15 @@ def draw_contour_on_image(img_draw: ImageDraw, contour_path: Union[Path, Contour
             0
         )
         
-        _draw_line(img_draw, path_vertices[i], path_vertices[i+1], color, height_mm, scale, buffer)
+        x0, y0 = path_vertices[i]
+        x1, y1 = path_vertices[i+1]
         
-    # ContourLoop do not close them selves
-    if type(contour_path) is ContourLoop:
-        _draw_line(img_draw, path_vertices[0], path_vertices[-1], 'red', height_mm, scale, buffer)
-        sx, sy = contour_path.get_sample_vertex()
-        ELLIPSE_SIZE = 2
-        bounds = (
-            ((sx - ELLIPSE_SIZE) + buffer) * scale,
-            ((height_mm - sy - ELLIPSE_SIZE) + buffer) * scale,
-            ((sx + ELLIPSE_SIZE) + buffer) * scale,
-            ((height_mm - sy + ELLIPSE_SIZE) + buffer) * scale,
-        )
-        img_draw.ellipse(bounds, fill=(0, 255, 255))
+        x0 = int((x0 + buffer) * scale)
+        y0 = int((height_mm - y0 + buffer) * scale)
+        x1 = int((x1 + buffer) * scale)
+        y1 = int((height_mm - y1 + buffer) * scale)
+        
+        img_draw.line((x0, y0, x1, y1), fill=color, width = (scale // 2))
     
 
 def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_Dimention):
