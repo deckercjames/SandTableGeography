@@ -1,15 +1,21 @@
 
-from dataclasses import dataclass
 import math
 
-@dataclass(eq=True, frozen=True)
 class Table_Dimention:
-    width_mm: int
-    height_mm: int
+    
+    def __init__(self, width_mm: int, height_mm: int, circular: bool = False):
+        self.width_mm = width_mm
+        self.height_mm = height_mm
+        self.circular = circular
+
     def get_width_mm(self) -> int:
         return self.width_mm
+
     def get_height_mm(self) -> int:
         return self.height_mm
+    
+    def is_circular(self) -> bool:
+        return self.circular
 
     def on_border_float(self, location: tuple[float, float]) -> bool:
         x, y = location
@@ -42,3 +48,11 @@ class Table_Dimention:
     
     def get_aspect_ratio(self) -> float:
         return self.width_mm / self.height_mm
+    
+    @staticmethod
+    def create_rect_table(width_mm: int, height_mm: int):
+        return Table_Dimention(width_mm, height_mm, circular=False)
+
+    @staticmethod
+    def create_circular_table(diameter_mm: int):
+        return Table_Dimention(diameter_mm, diameter_mm, circular=True)

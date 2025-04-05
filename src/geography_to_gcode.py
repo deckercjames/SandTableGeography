@@ -13,9 +13,10 @@ import logging
 import sys
 from src.logger import get_logger
 import os
-from src.path_utils import get_total_length
+from src.path_post_processing.path_utils import get_total_length
 import numpy.typing as npt
 import numpy as np
+from src.path_post_processing.path_mask import crop_path_to_circle
 
 logger = get_logger("main", logging.DEBUG)
 
@@ -83,9 +84,8 @@ def convert_elevation_data_to_path(elevation_data: npt.NDArray[np.float64], tabl
         
     path = generate_tree_spiral_path(topo_tree)
     
-    # List Tuple Float
-    if debug_file_dir is not None:
-        dump_contour_image(os.path.join(debug_file_dir, "complete_path_rotated.png"), path, table_dim)
+    if table_dim.is_circular():
+        path = crop_path_to_circle(path, table_dim)
     
     return path
     
