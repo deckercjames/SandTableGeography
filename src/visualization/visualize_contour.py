@@ -74,5 +74,7 @@ def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_D
 
 def dump_multiple_contour_images(debug_image_dir: str, image_base_name: str, contours: List, table_dim: Table_Dimention):
     
+    logger.debug("Dumping {} contour images [basename {}]...".format(len(contours), image_base_name))
+    
     for i, item in enumerate(contours):
         dump_contour_image("{}_{}.png".format(os.path.join(debug_image_dir, image_base_name), i), item, table_dim)

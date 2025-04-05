@@ -59,4 +59,6 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
     if too_small_loop_count > 0:
         logger.debug("Skipped {} loops because they were too small".format(too_small_loop_count))
     
+    logger.info("Finished building topo tree")
+    
     return topo_tree

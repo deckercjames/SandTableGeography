@@ -87,10 +87,16 @@ def merge_loop_fragments(paths: List[Path], table_dim: Table_Dimention) -> List[
 
 
 def merge_all_loop_fragments(all_paths: List[List[Path]], table_dim: Table_Dimention) -> List[List[ContourLoop]]:
+    
+    logger.debug("Closing loop fragments...")
+    
     all_contours: List[List[ContourLoop]] = []
     for i, paths in enumerate(all_paths):
         merged_loop_fragments = merge_loop_fragments(paths, table_dim)
         if len(merged_loop_fragments) == 0:
             continue
         all_contours.append(merged_loop_fragments)
+        
+    logger.info("Finished closing loop fragments")
+        
     return all_contours

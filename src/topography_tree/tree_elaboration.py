@@ -268,4 +268,6 @@ def generate_tree_spiral_path(root_node: TopographyTreeNode) -> npt.NDArray[np.f
         circ_length = (curr_exit_idx - curr_enter_idx + num_curr_vertices + 1) % num_curr_vertices
         path.extend(np.roll(current_contour_loop.get_vertices(), -(curr_enter_idx), axis=0)[:circ_length])
 
+    logger.info("Completed tree traversal")
+
     return np.array(path)

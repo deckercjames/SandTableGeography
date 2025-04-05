@@ -4,6 +4,11 @@ import numpy.typing as npt
 from src.spacial.table_dimention import Table_Dimention
 from scipy.spatial.distance import euclidean
 from typing import List
+import logging
+from src.logger import get_logger
+
+logger = get_logger("path mask", logging.DEBUG)
+
 
 def circle_line_intersection(circle_center, radius, line_start, line_end) -> List[npt.NDArray[np.float64]]:
     """
@@ -140,6 +145,8 @@ def _point_in_circle(circle_center, circle_radius, point) -> bool:
 
 def crop_path_to_circle(path: npt.NDArray[np.float64], table_dim: Table_Dimention) -> npt.NDArray[np.float64]:
     
+    logger.debug("Cropping path to circle...")
+    
     circle_radius = table_dim.get_width_mm() / 2
     circle_center = np.array([circle_radius, circle_radius], dtype=float)
     
@@ -162,8 +169,7 @@ def crop_path_to_circle(path: npt.NDArray[np.float64], table_dim: Table_Dimentio
         intersections = circle_line_intersection(circle_center, circle_radius, path[i-1], path[i])
         
         if len(intersections) != 1:
-            print("warning")
-            print(intersections)
+            logger.warning("Detected mask cross, but did not calculate one intersection. Got {}".format(intersections))
             continue
             
         intersection = intersections[0]
@@ -174,5 +180,7 @@ def crop_path_to_circle(path: npt.NDArray[np.float64], table_dim: Table_Dimentio
         
         last_intersection = intersection
         currently_in_circle = in_circle
+        
+    logger.info("Path cropped to circle")
         
     return np.array(masked_path)
