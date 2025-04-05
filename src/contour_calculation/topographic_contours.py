@@ -121,10 +121,10 @@ def break_apart_sub_loops(contour_lines: QuadContourSet) -> List[List[Path]]:
     return all_loops
         
 
-def get_contours(elevation_data: npt.NDArray[np.float64], table_dim_rotated: Table_Dimention, num_contours: int) -> tuple[List[List[Path]], Figure]:
+def get_contours(elevation_data: npt.NDArray[np.float64], table_dim: Table_Dimention, num_contours: int) -> tuple[List[List[Path]], Figure]:
     
-    x_line_space = np.linspace(0, table_dim_rotated.get_width_mm(), elevation_data.shape[1], dtype=np.float64)
-    y_line_space = np.linspace(table_dim_rotated.get_height_mm(), 0, elevation_data.shape[0], dtype=np.float64)
+    x_line_space = np.linspace(0, table_dim.get_width_mm(), elevation_data.shape[1], dtype=np.float64)
+    y_line_space = np.linspace(table_dim.get_height_mm(), 0, elevation_data.shape[0], dtype=np.float64)
 
     # TODO this doesn't work if there is any really flat terrain
     # levels = compute_adaptive_levels(elevations, x_line_space, y_line_space)
