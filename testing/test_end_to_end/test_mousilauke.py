@@ -16,9 +16,9 @@ def test_mnt_mousilauke_rotated():
     
     elevation_data = get_elevation_data(bbox, table_dim, "./input_data", 90)
     
-    path = convert_elevation_data_to_path(elevation_data, table_dim, num_contours=20)
+    path = convert_elevation_data_to_path(elevation_data, table_dim, num_contours=30)
     
-    assert len(path) == 5434
+    assert len(path) == 9242
 
 
 def test_mnt_mousilauke_wide():
@@ -31,7 +31,7 @@ def test_mnt_mousilauke_wide():
     
     elevation_data = get_elevation_data(bbox, table_dim, "./input_data", 90)
     
-    path = convert_elevation_data_to_path(elevation_data, table_dim, num_contours=20)
+    path = convert_elevation_data_to_path(elevation_data, table_dim, num_contours=30)
     
-    assert len(path) == 8834
+    assert len(path) == 15437
     
