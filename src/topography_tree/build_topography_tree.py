@@ -16,15 +16,11 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
     
     topo_tree = TopographyTreeNode(get_border_contour_loop(table_dim))
     
-    # make a tree root for each loop in the first layers
-    for loop in loop_layers[0]:
-        topo_tree.add_child(TopographyTreeNode(loop))
-        
-    leaf_nodes = topo_tree.children
+    leaf_nodes = [topo_tree]
     
     too_small_loop_count = 0
     
-    for loop_layer in loop_layers[1:]:
+    for loop_layer in loop_layers:
         
         if len(leaf_nodes) == 0:
             logger.error("No current leaf nodes. Skipping further tree generation")
@@ -51,9 +47,14 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
                 break
             
             else:
-                logger.warning("Could not fit loop of length {} into any {} leaves of the tree".format(len(loop.get_vertices()), len(leaf_nodes)))
+                logger.warning(
+                    "Could not fit loop of length {}, area {} into any {} leaves of the tree".format(
+                        len(loop.get_vertices()), loop.get_area(), len(leaf_nodes)
+                    )
+                )
             
-        leaf_nodes = new_leaf_nodes
+        if len(new_leaf_nodes) > 0:
+            leaf_nodes = new_leaf_nodes
     
     if too_small_loop_count > 0:
         logger.debug("Skipped {} loops because they were too small".format(too_small_loop_count))

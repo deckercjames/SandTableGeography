@@ -47,7 +47,7 @@ def draw_contour_on_image(img_draw: ImageDraw, contour_path: Union[Path, Contour
 
 def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_Dimention):
     
-    SCALE = 8 # pixels per mm
+    SCALE = 4 # pixels per mm
     BUFFER = 5 # buffer in mm
     
     width = int(table_dim.get_width_mm() + BUFFER + BUFFER) * SCALE
@@ -55,6 +55,10 @@ def dump_contour_image(image_name: str, contours: List[Path], table_dim: Table_D
     
     img = Image.new("RGB", (width, height))
     img_draw = ImageDraw.Draw(img)
+    
+    if  len(contours) == 0:
+        logger.error("Can not dump image with no contours")
+        return
     
     if type(contours[0]) is Path or type(contours[0]) is ContourLoop:
         for contour in contours:

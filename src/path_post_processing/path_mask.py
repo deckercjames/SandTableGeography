@@ -3,8 +3,9 @@ import numpy as np
 import numpy.typing as npt
 from src.spacial.table_dimention import Table_Dimention
 from scipy.spatial.distance import euclidean
+from typing import List
 
-def circle_line_intersection(circle_center, radius, line_start, line_end):
+def circle_line_intersection(circle_center, radius, line_start, line_end) -> List[npt.NDArray[np.float64]]:
     """
     Find the intersection points between a circle and a line segment.
     
@@ -158,12 +159,20 @@ def crop_path_to_circle(path: npt.NDArray[np.float64], table_dim: Table_Dimentio
             masked_path.append(path[i])
             continue
         
-        intersection = circle_line_intersection(circle_center, circle_radius, path[i-1], path[i])
+        intersections = circle_line_intersection(circle_center, circle_radius, path[i-1], path[i])
+        
+        if len(intersections) != 1:
+            print("warning")
+            print(intersections)
+            continue
+            
+        intersection = intersections[0]
         
         # transitioning into the circle
         if in_circle and last_intersection is not None:
             masked_path.extend(circular_arc_path(circle_center, circle_radius, last_intersection, intersection))
         
         last_intersection = intersection
+        currently_in_circle = in_circle
         
     return np.array(masked_path)
