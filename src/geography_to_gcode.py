@@ -113,7 +113,10 @@ def convert_geography_to_gcode(bbox: GeoBoundingBox, table_dim: Table_Dimention,
         with open(output_gcode_filepath, "w") as file:
             file.write(";\n")
             file.write("; Topographic Map\n")
-            file.write("; Table (millimeters): {} x {}\n".format(table_dim.get_width_mm(), table_dim.get_height_mm()))
+            if table_dim.is_circular():
+                file.write("; Table Diameter (millimeters): {}\n".format(table_dim.get_width_mm()))
+            else:
+                file.write("; Rectangular Table Shape (millimeters): {} x {}\n".format(table_dim.get_width_mm(), table_dim.get_height_mm()))
             file.write("; Latitude:  [{:.06f}, {:.06f}]\n".format(bbox.get_min_lat(), bbox.get_max_lat()))
             file.write("; Longitude: [{:.06f}, {:.06f}]\n".format(bbox.get_min_lon(), bbox.get_max_lon()))
             file.write("; Total Path Distance (meters): {:.3f}\n".format(total_dist_meters))
