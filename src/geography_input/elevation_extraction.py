@@ -44,10 +44,15 @@ def _load_and_crop_data_from_file(srtm_file_path: str, bounds):
     with rasterio.open(srtm_file_path) as src:
         # Create a geometry from the bounds
         geom = [box(*bounds)]
+        
+        print(bounds)
+        
+        print(geom)
 
         # Mask the dataset to the geometry
         try:
             elevation_data, _ = mask(src, geom, crop=True, all_touched=True)
+            print(elevation_data.shape)
             elevation_data = elevation_data[0]  # Get the first band
         except ValueError:
             logger.fatal("Merged bounds issue. Using full merged dataset.")
