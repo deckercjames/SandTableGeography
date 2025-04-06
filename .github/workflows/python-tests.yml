@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - pipeline_fix
   pull_request:
     branches:
       - main
@@ -33,4 +32,4 @@ jobs:
     - name: Run tests with pytest
       run: |
         source venv/bin/activate
-        python3 -m pytest
+        python3 -m pytest testing/
