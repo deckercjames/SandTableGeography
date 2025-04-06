@@ -8,8 +8,30 @@ from src.logger import get_logger
 import logging
 logger = get_logger("topo tree", logging.DEBUG)
 
+SQ_MM_TO_SQ_CM = 100
+
 # For a loop to be included in the tree, it must me at least this many mm squared in area
-CRITICAL_LOOP_AREA = 10
+CRITICAL_LOOP_AREA = 20
+
+
+def is_contour_loop_convex(loop: ContourLoop) -> bool:
+    
+    vertices = loop.get_vertices()
+    
+    # Calculate the signed area using the shoelace formula
+    signed_area = 0
+    
+    # The loop needs to consider consecutive pairs of points
+    # and wrap around to the first point
+    for i in range(len(vertices)):
+        x1, y1 = vertices[i]
+        x2, y2 = vertices[(i + 1) % len(vertices)]
+        
+        # Add the cross product
+        signed_area += (x2 - x1) * (y2 + y1)
+    
+    # If the signed area is negative, the polygon is clockwise
+    return signed_area > 0
 
 
 def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table_Dimention) -> TopographyTreeNode:
@@ -35,6 +57,12 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
                 too_small_loop_count += 1
                 continue
             
+            if not is_contour_loop_convex(loop):
+                logger.warning("Concave loop of area {:.2f} cm-sq encountered. Concave topo features are not supported yet. Skipping".format(
+                    loop.get_area() / SQ_MM_TO_SQ_CM
+                ))
+                continue
+            
             # Check all leaf nodes to see which one to add this loop to
             for leaf in leaf_nodes:
                 
@@ -48,8 +76,8 @@ def build_topography_tree(loop_layers: List[List[ContourLoop]], table_dim: Table
             
             else:
                 logger.warning(
-                    "Could not fit loop of length {}, area {} into any {} leaves of the tree".format(
-                        len(loop.get_vertices()), loop.get_area(), len(leaf_nodes)
+                    "Could not fit loop of area {:.2f} cm-sq into any {} leaves of the tree".format(
+                        loop.get_area() / SQ_MM_TO_SQ_CM, len(leaf_nodes)
                     )
                 )
             

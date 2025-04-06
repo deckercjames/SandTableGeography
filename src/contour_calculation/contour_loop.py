@@ -7,6 +7,7 @@ from src.spacial.table_dimention import Table_Dimention
 import math
 from matplotlib.path import Path
 
+
 class ContourLoop:
     def __init__(self, vertices, sample_vertex=None, border_indices=[]):
         self.vertices = vertices
@@ -65,11 +66,14 @@ class ContourLoopBuilder:
     
     def _extend_corner_links(self, location0, location1) -> list:
         corner_points = []
-        bp0 = self.table_dim.get_border_position(location0)
-        bp1 = self.table_dim.get_border_position(location1)
         x0, y0 = location0
         x1, y1 = location1
-        while not (math.isclose(x0, x1) or math.isclose(y0, y1)) or bp0 > bp1:
+        while not (
+                    (math.isclose(x1, 0) and math.isclose(x0, 0) and y0 < y1) or
+                    (math.isclose(x1, self.table_dim.get_width_mm()) and math.isclose(x0, x1) and y0 > y1) or
+                    (math.isclose(y1, 0) and math.isclose(y0, 0) and x0 > x1) or
+                    (math.isclose(y1, self.table_dim.get_height_mm()) and math.isclose(y0, y1) and x0 < x1)
+                ):
             # move location_0 clockwise around the border
             on_left   = math.isclose(x0, 0)
             on_top    = math.isclose(y0, self.table_dim.get_height_mm())
@@ -85,7 +89,6 @@ class ContourLoopBuilder:
                 x0 = 0
             else:
                 raise Exception("Border walk failed")
-            bp0 = self.table_dim.get_border_position((x0, y0))
             corner_points.append((x0, y0))
         self.path.extend(corner_points)
 

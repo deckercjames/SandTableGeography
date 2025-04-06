@@ -70,10 +70,6 @@ def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, aspect_ratio: float) -> Geo
     lat_center = (lat_min + lat_max) / 2
     lon_center = (lon_min + lon_max) / 2
     
-    # Compute the scale factor for longitude based on the latitude center
-    # Longitude degrees shrink as you move towards the poles, so we need to adjust for this
-    scale_factor = np.cos(np.radians(lat_center))
-    
     if aspect_ratio > (lon_diff / lat_diff):
         # If the desired aspect ratio requires a wider box (width > height)
         new_width = lon_diff
@@ -88,10 +84,8 @@ def crop_bounding_box_to_ratio(bbox: GeoBoundingBox, aspect_ratio: float) -> Geo
         # If the desired aspect ratio requires a taller box (height > width)
         new_height = lat_diff
         new_width = aspect_ratio * new_height
-        # Adjust the longitude difference by the scale factor (to account for decreasing distance between meridians)
-        new_lon_diff = new_width / scale_factor
         # Ensure that the new longitude doesn't go beyond the limits
-        half_lon_diff = new_lon_diff / 2
+        half_lon_diff = new_width / 2
         new_lon_min = lon_center - half_lon_diff
         new_lon_max = lon_center + half_lon_diff
         # Latitude remains the same

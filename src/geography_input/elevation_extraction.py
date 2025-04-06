@@ -40,29 +40,32 @@ def _normalize_file_path(srtm_files: Union[str, List[str]]) -> List[str]:
     sys.exit(1)
 
 
-def _load_and_crop_data_from_file(srtm_file_path: str, bounds):
+def _load_and_crop_data_from_file(srtm_file_path: str, bbox: GeoBoundingBox):
     with rasterio.open(srtm_file_path) as src:
+        
+        # Verify that the file has full coverage of the bounds
+        file_bounds = src.bounds
+        if (bbox.get_min_lon() < file_bounds.left or bbox.get_max_lon() > file_bounds.right or
+                    bbox.get_min_lat() < file_bounds.bottom or bbox.get_max_lon() > file_bounds.top):
+            logger.fatal("Given elevation data does not cover requested bounding box")
+            sys.exit(1)
+        
         # Create a geometry from the bounds
-        geom = [box(*bounds)]
+        geom = [box(*bbox.get_all_values_tuple())]
         
-        print(bounds)
-        
-        print(geom)
-
         # Mask the dataset to the geometry
         try:
             elevation_data, _ = mask(src, geom, crop=True, all_touched=True)
-            print(elevation_data.shape)
             elevation_data = elevation_data[0]  # Get the first band
         except ValueError:
-            logger.fatal("Merged bounds issue. Using full merged dataset.")
+            logger.fatal("Merged bounds issue.")
             sys.exit(1)
 
     logger.debug("Loaded file: {}".format(srtm_file_path))
     return elevation_data
 
 
-def _filter_relevent_files(srtm_files, bounds):
+def _filter_relevent_files(srtm_files, bbox: GeoBoundingBox):
     
     # First, check if any of the files intersect with our bounds
     files_to_process = []
@@ -74,8 +77,8 @@ def _filter_relevent_files(srtm_files, bounds):
                 file_bounds = src.bounds
                 
                 # Check if file bounds intersect with requested bounds
-                if (bounds[0] < file_bounds.right and bounds[2] > file_bounds.left and
-                    bounds[1] < file_bounds.top and bounds[3] > file_bounds.bottom):
+                if (bbox.get_min_lon() < file_bounds.right and bbox.get_max_lon() > file_bounds.left and
+                    bbox.get_min_lat() < file_bounds.top and bbox.get_max_lat() > file_bounds.bottom):
                     files_to_process.append(file_path)
         except OSError as err:
             logger.warning("Could not open '{}' Error: {}".format(file_path, err))
@@ -134,7 +137,7 @@ def _load_data(files_to_process, bounds):
                     # Replace the old temp file
                     os.replace(new_temp, temp_file)
             except Exception as e:
-                print(f"Warning: Error processing file {files_to_process[i]}. Error: {e}. Skipping.")
+                logger.warning("Error processing file {}: {}".format(files_to_process, e))
         
         # Read the final merged result
         return _load_and_crop_data_from_file(temp_file, bounds)
@@ -162,10 +165,8 @@ def get_srtm_elevation_data(srtm_files, bbox: GeoBoundingBox) -> npt.NDArray[np.
     norm_srtm_files = _normalize_file_path(srtm_files)
     
     logger.info("Found {} elevation files from path '{}'".format(len(norm_srtm_files), srtm_files))
-    
-    bounds = bbox.get_all_values_tuple()
-    
-    files_to_process = _filter_relevent_files(norm_srtm_files, bounds)
+
+    files_to_process = _filter_relevent_files(norm_srtm_files, bbox)
     
     if len(files_to_process) == 0:
         logger.fatal("None of the provided files intersect with the specified bounds.")
@@ -173,7 +174,7 @@ def get_srtm_elevation_data(srtm_files, bbox: GeoBoundingBox) -> npt.NDArray[np.
 
     logger.info("Found {} relevant elevation files".format(len(files_to_process)))
     
-    elevation_data = _load_data(files_to_process, bounds)
+    elevation_data = _load_data(files_to_process, bbox)
 
     logger.info("Successfully loaded all necessary elevation data")
     

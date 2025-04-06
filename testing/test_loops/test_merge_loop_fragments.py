@@ -118,6 +118,37 @@ def test_open_loop_right_side():
     assert recv_loops == exp_loops
 
 
+def test_open_loop_bottom_side_all_around():
+    test_table_dim = Table_Dimention(400, 300)
+    test_loops = [
+        _get_loop_fragmment([
+            (50, 0),
+            (50, 10),
+            (40, 25),
+            (35, 0),
+        ], close=False),
+    ]
+    recv_loops = merge_loop_fragments(test_loops, test_table_dim)
+    exp_loops = [
+        ContourLoop(
+            [
+                (50, 0),
+                (50, 10),
+                (40, 25),
+                (35, 0),
+                (0, 0),
+                (0, 300),
+                (400, 300),
+                (400, 0),
+            ],
+            border_indices=[0, 3, 4, 5, 6, 7]
+        ),
+    ]
+    print(recv_loops[0].get_vertices())
+    print(recv_loops[0].border_indices)
+    assert recv_loops == exp_loops
+
+
 def test_open_loop_top_to_left():
     test_table_dim = Table_Dimention(400, 300)
     test_loops = [

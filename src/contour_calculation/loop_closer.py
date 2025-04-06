@@ -68,7 +68,7 @@ def merge_loop_fragments(paths: List[Path], table_dim: Table_Dimention) -> List[
         while True:
             # Record this loop fragment
             contour_loop_builder.append_path_frag(paths[node_itr.loop_frag_idx])
-            # Move to nest start end
+            # Move to next start end
             prev_node_itr = node_itr
             node_itr = node_itr.get_next()
             if node_itr is None:
