@@ -33,8 +33,8 @@ pip install -r ./requirements.txt
 | :---------------- | :------ | ---- | -- | --- |
 | -t | --topography | file or directory path | `./input_data/` | The elevation data to read in |
 | -o | --output | file path | `output.gcode` | The output gcode file. The image representation will use the same name, with a `.png` extension |
-| -r | --rotation | integer (0,90,180,270) | `0` | The rotation in degrees the path should be made in |
-| -n | --num-contours | integer | `20` | The number of elevation contours to draw betwween the minimum and maximum poinst of elevation of the area mapped |
+| -r | --rotation | integer (0,90,180,270) | `0` | The rotation of the map in degrees counter clockwise |
+| -n | --num-contours | integer | `30` | The number of elevation contours to draw betwween the minimum and maximum points of elevation of the mapped area |
 | -d | --debug-dir | directory path | *None* | A directory to output debugging related files. This includes a drawing of each elevation, before and after loops have been merged. This may generate a lot of image files and is off by default |
 
 
@@ -52,14 +52,16 @@ python3 ./main.py 44.04207 -71.85694 44.000153 -71.80904 880x550 -r 90
 ![mt moosilauke path representation](documentation/moosilauke_path_rep.png "Mt. Moosilauke")
 *North is to the left*
 
+The path starts at the yellow end and moves toward the red end.
+
 # Limitations
 - Patterns can only be rotated in increments of 90 degrees
 - Water features are not handled
-- Does not handle concave topograpy features
+- Does not handle concave topography features
 
 # Testing
 
 ### Run unit tests
 ```
-python3 -m pytest
+python3 -m pytest testing/
 ```
