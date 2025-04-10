@@ -1,5 +1,4 @@
 
-from dataclasses import dataclass
 from shapely.geometry import Polygon
 import numpy as np
 from src.logger import get_logger
@@ -8,43 +7,47 @@ import logging
 logger = get_logger("geo coord", logging.DEBUG)
 
 
-@dataclass(frozen=True)
 class GeoBoundingBox:
-    lat_0: float
-    lon_0: float
-    lat_1: float
-    lon_1: float
+    def __init__(self, lat_0, lon_0, lat_1, lon_1):
+        self.min_lat = min(lat_0, lat_1)
+        self.min_lon = min(lon_0, lon_1)
+        self.max_lat = max(lat_0, lat_1)
+        self.max_lon = max(lon_0, lon_1)
+        
     def get_min_lat(self):
-        return min(self.lat_0, self.lat_1)
+        return self.min_lat
     def get_min_lon(self):
-        return min(self.lon_0, self.lon_1)
+        return self.min_lon
     def get_max_lat(self):
-        return max(self.lat_0, self.lat_1)
+        return self.max_lat
     def get_max_lon(self):
-        return max(self.lon_0, self.lon_1)
-    def get_lon_width(self):
-        return self.get_max_lon() - self.get_min_lon()
+        return self.max_lon
+    
     def get_lat_height(self):
-        return self.get_max_lat() - self.get_min_lat()
-    def get_lon_midpoint(self):
-        return (self.get_min_lon() + self.get_max_lon()) / 2
+        return self.max_lat - self.min_lat
+    def get_lon_width(self):
+        return self.max_lon - self.min_lon
+    
     def get_lat_midpoint(self):
-        return (self.get_min_lat() + self.get_max_lat()) / 2
+        return (self.min_lat + self.max_lat) / 2
+    def get_lon_midpoint(self):
+        return (self.min_lon + self.max_lon) / 2
+    
     def get_all_values_tuple(self):
         return (
-            self.get_min_lon(),
-            self.get_min_lat(),
-            self.get_max_lon(),
-            self.get_max_lat(),
+            self.min_lon,
+            self.min_lat,
+            self.max_lon,
+            self.max_lat,
         )
+
     def get_as_polygon(self):
-        min_lon, min_lat, max_lon, max_lat = self.get_all_values_tuple()
         return Polygon([
-            (min_lon, min_lat),
-            (max_lon, min_lat),
-            (max_lon, max_lat),
-            (min_lon, max_lat),
-            (min_lon, min_lat)
+            (self.min_lon, self.min_lat),
+            (self.max_lon, self.min_lat),
+            (self.max_lon, self.max_lat),
+            (self.min_lon, self.max_lat),
+            (self.min_lon, self.min_lat)
         ])
 
 
