@@ -76,16 +76,12 @@ def break_apart_sub_loops(contour_lines: QuadContourSet) -> List[List[Path]]:
     
     # print("Found contours", len(contour_lines))
     # print(contour_lines[0])
-    for j, collection in enumerate(contour_lines.collections):
+    for j, path in enumerate(contour_lines.get_paths()):
         
         loops = []
         
-        contour_paths = collection.get_paths()
-        
-        if len(contour_paths) == 0:
+        if len(path.vertices) == 0:
             continue
-        
-        path = contour_paths[0]
         
         vertices = path.vertices
         codes = path.codes
