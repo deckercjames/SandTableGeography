@@ -3,7 +3,7 @@ geopandas==1.0.1
 matplotlib==3.9.4
 numpy==2.0.2
 osmnx==2.0.1
-Pillow==12.1.1
+Pillow>=12.1.1
 rasterio==1.4.3
 scipy==1.17.1
 Shapely==2.1.2
