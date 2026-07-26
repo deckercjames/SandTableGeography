@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: '3.14'
 
     - name: Install dependencies
       run: |
@@ -27,7 +27,7 @@ jobs:
         source venv/bin/activate
         pip install --upgrade pip
         # Use separate requrements becuase github does not have all the same versions
-        pip install -r .github/requirements.txt
+        pip install -r ./requirements-dev.txt
 
     - name: Run tests with pytest
       run: |
