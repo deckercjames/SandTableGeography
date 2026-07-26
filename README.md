@@ -8,7 +8,7 @@ A way to convert topographic maps into gcode for a kinetic sand table. This take
 
 # Requirements
 
-Tested with python version `3.10.16`
+Tested with python version `3.14.4`
 
 ### Install dependencies
 ```
